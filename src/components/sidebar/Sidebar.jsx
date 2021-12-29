@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useState } from 'react';
 import {
     LineStyle,
     Timeline,
@@ -12,18 +13,33 @@ import {
     ChatBubbleOutline,
     WorkOutline,
     Report,
-  } from "@material-ui/icons";
+} from "@material-ui/icons";
 
 const Container = styled.div`
-    flex: 1;
-    height: calc(100vh - 50px);
+
+    height: calc(100vh);
     background-color: rgb(251, 251, 255);
     position: sticky;
-    top: 15px;
+    top: 0px;
+    z-index: 999;
+    transition: transform 250ms;
+
+    width: 4%;
+    
+    ${props => props.Hide &&
+        `flex: 0;
+        position: absolute;
+        transform: translateX(-165px);
+        `}
+        &:hover {
+        width: 10%;
+    }
 `
 const SideBarWrapper = styled.div`
     padding: 20px;
     color: #555;
+    left: 0;
+    
 `
 const SideBarMenu = styled.div`
     margin-bottom: 10px;
@@ -52,7 +68,15 @@ const SideBarListItem = styled.li`
 
 `
 
-
+const Logo = styled.span`
+    font-weight: bold;
+    font-size: 30px;
+`
+const Span = styled.span`
+    cursor: pointer;
+    margin-left: 40px;
+    position: absolute;
+`
 
 export default function Sidebar() {
     let id = "default";
@@ -68,9 +92,19 @@ export default function Sidebar() {
         header.classList.add('active');
     }
 
+    const [Hide, setHide] = useState(false);
+    const HideSideBar = () => {
+        if (Hide === false) {
+            setHide(true);
+        } else {
+            setHide(false);
+        }
+    }
     return (
-        <Container>
-            <SideBarWrapper>
+        <Container Hide={Hide}>
+            <SideBarWrapper Hide={Hide} id="sidebar">
+                <Logo>GENIUS.</Logo>
+                <Span onClick={() => HideSideBar()} >Hide</Span>
                 <SideBarMenu>
                     <SideBarTitle>Dashboard</SideBarTitle>
                     <SideBarList>
@@ -144,6 +178,6 @@ export default function Sidebar() {
                     </SideBarList>
                 </SideBarMenu>
             </SideBarWrapper>
-        </Container>
+        </Container >
     )
 }

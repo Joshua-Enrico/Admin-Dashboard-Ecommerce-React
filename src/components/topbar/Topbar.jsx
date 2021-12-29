@@ -6,24 +6,30 @@ import SettingsIcon from '@material-ui/icons/Settings';
 const Container = styled.div`
     width: 100%;
     height: 50px;
-    background-color: white;
-    position: sticky;
-    top: 0;
-    z-index: 999;
+
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    z-index: 12;
 `
 const TopBarWrapper = styled.div`
     height: 100%;
     padding: 0px 20px;
     display: flex;
     align-items: center;
+    flex-direction: row-reverse;
     justify-content: space-between;
 `
 const TopLeft = styled.div`
 
 `
 const TopRight = styled.div`
+    margin-right: 20px;
     display: flex;
     align-items: center;
+    background-color: white;
+    border-radius: 10px;
+    z-index: 999;
 `
 const Logo = styled.span`
     font-weight: bold;
@@ -63,9 +69,7 @@ export default function Topbar() {
     return (
         <Container>
             <TopBarWrapper>
-                <TopLeft>
-                    <Logo>GENIUS.</Logo>
-                </TopLeft>
+
                 <TopRight>
                     <TopBarIcons>
                         <NotificationsNoneIcon />
