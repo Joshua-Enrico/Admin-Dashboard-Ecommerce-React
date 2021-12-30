@@ -45,6 +45,11 @@ const DropMenuDiv = styled.div`
         border-radius: 10px;
     }
 `
+const BR = styled.br`
+content: " ";
+display: none;
+margin: 2.5em 0;
+`
 
 const SideBarListItem = styled.li`
     cursor: pointer;
@@ -54,7 +59,7 @@ const SideBarListItem = styled.li`
     border-bottom-left-radius: 20px;
     width: 100%;
     
-    &.active {
+    &.selected {
         background: #fff;
         & > a{
             color: black;
@@ -74,7 +79,7 @@ const SideBarListItem = styled.li`
             width: 100%;
             height: 100%;
             border-bottom-right-radius: 20px;
-            background: #4d5bf9;
+            background: #42b883;
         }
         & > b:nth-child(2){
             position: absolute;
@@ -91,10 +96,16 @@ const SideBarListItem = styled.li`
             width: 100%;
             height: 100%;
             border-top-right-radius: 20px;
-            background: #4d5bf9;
+            background: #42b883;
         }
-        
     }
+
+
+    &.active {
+
+
+    }
+
 `
 const Container = styled.div`
     position: fixed;
@@ -105,16 +116,59 @@ const Container = styled.div`
     width: 65px;
     box-sizing: initial;
     border-radius: 10px;
-    border-left: 5px solid #4d5bf9;
-    background: #4d5bf9;
+    border-left: 5px solid #42b883;
+    background: #42b883;
     transition: width 0.2s;
     overflow-x: hidden;
     &:hover {
         width: 200px;
         ${SideBarListItem} {
+            &.space {
+                & > ${BR}{
+                    display: block;
+                }
+            }
             &.active {
                 & > ${DropMenu} {
                     display: block;
+                }
+                background: #fff;
+                & > a{
+                    color: black;
+                }
+                & > b:nth-child(1){
+                    position: absolute;
+                    top: -20px;
+                    height: 20px;
+                    width: 100%;
+                    background: #fff;
+                }
+                & > b:nth-child(1)::before{
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    border-bottom-right-radius: 20px;
+                    background: #42b883;
+                }
+                & > b:nth-child(2){
+                    position: absolute;
+                    bottom: -20px;
+                    height: 20px;
+                    width: 100%;
+                    background: #fff;
+                }
+                & > b:nth-child(2)::before{
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    border-top-right-radius: 20px;
+                    background: #42b883;
                 }
             }
         }
@@ -176,44 +230,70 @@ const DropMenuIcon = styled.span`
 
 export default function Sidebar1() {
 
-    let id = "default";
+    let id = {};
+    let index = "";
     let flag = 0;
+    let flag1 = 0;
     let Did = "default";
     const ActiveLink = (e) => {
-        console.log(e)
-        console.log(id)
-        if (e !== id && flag > 0) {
-            const header = document.querySelector('#' + id);
+        console.log(Object.keys(id).length)
+        if (e !== id && flag > 0 && Object.keys(id).length > 0) {
+            const header = document.querySelector('#' + id[index]);
+            delete id[index]
             header.classList.remove('active');
+
             // if (Did !== "default") {
             //     const header = document.querySelector('#' + Did);
             //     header.classList.remove('active');
             // }
         }
         flag = 1;
-        id = e;
+        id[e] = e;
+        index = e
+        console.log(id)
         const header = document.querySelector('#' + e);
         header.classList.add('active');
     }
 
-
+    let LitemId = "default"
     let Dflag = 0;
-    const ActiveDropLink = (e) => {
-        console.log(e.currentTarget.id)
+    const ActiveDropLink = (e, b) => {
         if (e.currentTarget.id !== Did && Dflag > 0) {
             const item = document.querySelector('#' + Did);
             item.classList.remove('active');
+            flag1 = 0;
+            const ListItem = document.querySelector('#' + LitemId);
+            ListItem.classList.remove('space');
+            let x = e.currentTarget.id[0].split("")
+            let y = Did[0].split("")
+            console.log(id)
+            // handle active box
+            if (x[0] != y[0]) {
+                console.log("diferent")
+                const header = document.querySelector('#' + y);
+                header.classList.remove('space');
+                header.classList.remove('active');
+                header.classList.remove('selected');
+            }
         }
         Dflag = 1;
+        flag1 = 1;
         Did = e.currentTarget.id;
+        LitemId = b
+        delete id[b]
         const item = document.querySelector('#' + e.currentTarget.id);
         item.classList.add('active');
+        const ListItem = document.querySelector('#' + LitemId);
+
+        ListItem.classList.add('space');
+        ListItem.classList.add('selected');
     }
 
     return (
         <Container>
             <SideBarList>
                 <SideBarListItem id="a" >
+
                     <B></B>
                     <B></B>
                     <Aref href="#" onClick={(e) => ActiveLink("a")}>
@@ -222,79 +302,96 @@ export default function Sidebar1() {
                         <SpanText>X</SpanText>
                     </Aref>
                     <DropMenu>
-                        <DropMenuDiv id="a1" onClick={(e) => ActiveDropLink(e)}>
+                        <DropMenuDiv id="a1" onClick={(e) => ActiveDropLink(e, "a")}>
                             <DropMenuIcon><BsCircle style={{ fontSize: "10" }} /></DropMenuIcon>
                             <DropMenuText>Home</DropMenuText>
                         </DropMenuDiv>
-                        <DropMenuDiv id="a2" onClick={(e) => ActiveDropLink(e)}>
+                        <DropMenuDiv id="a2" onClick={(e) => ActiveDropLink(e, "a")}>
                             <DropMenuIcon><BsCircle style={{ fontSize: "10" }} /></DropMenuIcon>
                             <DropMenuText>Analytics</DropMenuText>
                         </DropMenuDiv>
-                        <DropMenuDiv id="a3" onClick={(e) => ActiveDropLink(e)}>
+                        <DropMenuDiv id="a3" onClick={(e) => ActiveDropLink(e, "a")}>
                             <DropMenuIcon><BsCircle style={{ fontSize: "10" }} /></DropMenuIcon>
                             <DropMenuText>Sales</DropMenuText>
                         </DropMenuDiv>
-
                     </DropMenu>
+                    <BR />
                 </SideBarListItem>
                 <SideBarListItem id="b">
                     <B></B>
                     <B></B>
+                    <BR />
                     <Aref href="#" onClick={(e) => ActiveLink("b")}>
                         <SpanIcon><DonutSmallSharp /></SpanIcon>
                         <SpanText>QuickMenu</SpanText>
                     </Aref>
                     <DropMenu>
-                        <DropMenuDiv id="a4" onClick={(e) => ActiveDropLink(e)}>
+                        <DropMenuDiv id="b4" onClick={(e) => ActiveDropLink(e, "b")}>
                             <DropMenuIcon><BsCircle style={{ fontSize: "10" }} /></DropMenuIcon>
                             <DropMenuText>Users</DropMenuText>
                         </DropMenuDiv>
-                        <DropMenuDiv id="a5" onClick={(e) => ActiveDropLink(e)}>
+                        <DropMenuDiv id="b5" onClick={(e) => ActiveDropLink(e, "b")}>
                             <DropMenuIcon><BsCircle style={{ fontSize: "10" }} /></DropMenuIcon>
                             <DropMenuText>Products</DropMenuText>
                         </DropMenuDiv>
-                        <DropMenuDiv id="a6" onClick={(e) => ActiveDropLink(e)}>
+                        <DropMenuDiv id="b6" onClick={(e) => ActiveDropLink(e, "b")}>
                             <DropMenuIcon><BsCircle style={{ fontSize: "10" }} /></DropMenuIcon>
                             <DropMenuText>Transactions</DropMenuText>
                         </DropMenuDiv>
-                        <DropMenuDiv id="a6" onClick={(e) => ActiveDropLink(e)}>
+                        <DropMenuDiv id="b6" onClick={(e) => ActiveDropLink(e, "b")}>
                             <DropMenuIcon><BsCircle style={{ fontSize: "10" }} /></DropMenuIcon>
                             <DropMenuText>Reports</DropMenuText>
                         </DropMenuDiv>
 
                     </DropMenu>
+                    <BR />
                 </SideBarListItem>
                 <SideBarListItem id="c" >
                     <B></B>
                     <B></B>
+                    <BR />
                     <Aref href="#" onClick={(e) => ActiveLink("c")}>
                         <SpanIcon><MailOutlineSharp /></SpanIcon>
                         <SpanText>Notifications</SpanText>
                     </Aref>
                     <DropMenu>
-                        <DropMenuDiv id="a7" onClick={(e) => ActiveDropLink(e)}>
+                        <DropMenuDiv id="c7" onClick={(e) => ActiveDropLink(e, "c")}>
                             <DropMenuIcon><BsCircle style={{ fontSize: "10" }} /></DropMenuIcon>
                             <DropMenuText>Mail</DropMenuText>
                         </DropMenuDiv>
-                        <DropMenuDiv id="a8" onClick={(e) => ActiveDropLink(e)}>
+                        <DropMenuDiv id="c8" onClick={(e) => ActiveDropLink(e, "c")}>
                             <DropMenuIcon><BsCircle style={{ fontSize: "10" }} /></DropMenuIcon>
                             <DropMenuText>Feedback</DropMenuText>
                         </DropMenuDiv>
-                        <DropMenuDiv id="a9" onClick={(e) => ActiveDropLink(e)}>
+                        <DropMenuDiv id="c9" onClick={(e) => ActiveDropLink(e, "c")}>
                             <DropMenuIcon><BsCircle style={{ fontSize: "10" }} /></DropMenuIcon>
                             <DropMenuText>Messages</DropMenuText>
                         </DropMenuDiv>
-
                     </DropMenu>
+                    <BR />
                 </SideBarListItem>
                 <SideBarListItem id="e">
                     <B></B>
                     <B></B>
+                    <BR />
                     <Aref href="#" onClick={(e) => ActiveLink("e")}>
                         <SpanIcon><PersonOutlineSharp /></SpanIcon>
-
                         <SpanText>Staff</SpanText>
                     </Aref>
+                    <DropMenu>
+                        <DropMenuDiv id="e8" onClick={(e) => ActiveDropLink(e, "e")}>
+                            <DropMenuIcon><BsCircle style={{ fontSize: "10" }} /></DropMenuIcon>
+                            <DropMenuText>Manage</DropMenuText>
+                        </DropMenuDiv>
+                        <DropMenuDiv id="e9" onClick={(e) => ActiveDropLink(e, "e")}>
+                            <DropMenuIcon><BsCircle style={{ fontSize: "10" }} /></DropMenuIcon>
+                            <DropMenuText>Analytics</DropMenuText>
+                        </DropMenuDiv>
+                        <DropMenuDiv id="e10" onClick={(e) => ActiveDropLink(e, "e")}>
+                            <DropMenuIcon><BsCircle style={{ fontSize: "10" }} /></DropMenuIcon>
+                            <DropMenuText>Reports</DropMenuText>
+                        </DropMenuDiv>
+                    </DropMenu>
                 </SideBarListItem>
             </SideBarList>
 
